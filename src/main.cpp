@@ -54,11 +54,12 @@ void setup()
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
   // Display static text
-  display.println("LIGANDO...");
+  display.println("TEMPERATURA");
   display.display();
+  // display.startscrollleft(0x00,0x07);
 
-  // TMP75 CONFIG ---------------------------------------------
-  Wire.beginTransmission(TMP75_ADDR); // Address the TMP75 sensor
+      // TMP75 CONFIG ---------------------------------------------
+      Wire.beginTransmission(TMP75_ADDR); // Address the TMP75 sensor
   Wire.write(TMP75_CONFIG_REG);       // Select the configuration register
   Wire.write(0b01100000);             // Write desired config: No Shutdown mode, Termostat in Comp. mode, Def. Polarity, Fault queue 1, 12 bit resolution, One-Shot disabled
   Wire.endTransmission();
@@ -75,16 +76,19 @@ void loop()
 {
   display.clearDisplay();
   float temp = read_tm75();
-  Serial.print("Temperature = ");
-  Serial.print(temp);
-  Serial.println(" C");
   delay(500);
-  display.setFont(&FreeSans12pt7b);
-  display.setTextSize(1);
+  // display.setFont(&FreeSans12pt7b);
+  display.setTextSize(2);
+  display.setCursor(0, 0);
+  display.println("TEMP/TIMER");
+  // display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.setCursor(0, 33);
+  // display.setCursor(0, 33);
   display.printf("%4.1f", temp);
-  display.setCursor(0, 52);
-  display.printf("%2d:%2d:%2d",2-hour(),60-minute(),60-second());
+  // display.drawCircle(55, 18, 2, WHITE);
+  // display.setCursor(0, 13);
+  display.println(" C");
+  // display.setCursor(0, 30);
+  display.printf("%uh%um%us",1-hour(),59-minute(),59-second());
   display.display();
 }
