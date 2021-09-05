@@ -2,6 +2,11 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_GFX.h>
 #include <Fonts/FreeSans12pt7b.h>
+#include <TimeLib.h>
+
+///////// VARIÁVEIS
+int32 cron, timer;
+int h, m, s;
 
 ///////// DEFINIÇÃO DO DISPLAY
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -26,6 +31,7 @@ float read_tm75()
   // In 12-bit mode, resolution is 0.0625°C (1/16th)
   return tm75_reg / float (16);
 }
+extern volatile unsigned long timer0_millis; //Pra poder zerar o timer 0 lá na frente 
 
 void setup()
 {
@@ -51,7 +57,7 @@ void setup()
   display.println("LIGANDO...");
   display.display();
 
-  // TMP75 CONFIG ------------------------------------------------------
+  // TMP75 CONFIG ---------------------------------------------
   Wire.beginTransmission(TMP75_ADDR); // Address the TMP75 sensor
   Wire.write(TMP75_CONFIG_REG);       // Select the configuration register
   Wire.write(0b01100000);             // Write desired config: No Shutdown mode, Termostat in Comp. mode, Def. Polarity, Fault queue 1, 12 bit resolution, One-Shot disabled
@@ -59,6 +65,10 @@ void setup()
   Wire.beginTransmission(TMP75_ADDR); // Address the TMP75 sensor
   Wire.write(TMP75_TEMP_REG);         // Select the temperature register, so further read requests will retrieve from it.
   Wire.endTransmission();
+
+  // TIMER ------------------------------------------------------
+  time_t t = now();
+  setTime(0, 0, 0, 4, 9, 2021);
 }
 
 void loop()
@@ -72,7 +82,9 @@ void loop()
   display.setFont(&FreeSans12pt7b);
   display.setTextSize(1);
   display.setTextColor(WHITE);
-  display.setCursor(0, 32);
+  display.setCursor(0, 33);
   display.printf("%4.1f", temp);
+  display.setCursor(0, 52);
+  display.printf("%2d:%2d:%2d",2-hour(),60-minute(),60-second());
   display.display();
 }
