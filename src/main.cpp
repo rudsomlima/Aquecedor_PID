@@ -14,8 +14,8 @@ int h, m, s;
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-#define I2C_SDA 5
-#define I2C_SCL 4
+#define I2C_SDA 5  //D1
+#define I2C_SCL 4  //D2
 
 ///////// DEFINIÇÃO DO SENSOR
 int TMP75_ADDR = 0x49;
@@ -76,7 +76,6 @@ void loop()
 {
   display.clearDisplay();
   float temp = read_tm75();
-  delay(500);
   // display.setFont(&FreeSans12pt7b);
   display.setTextSize(2);
   display.setCursor(0, 0);
@@ -91,4 +90,9 @@ void loop()
   // display.setCursor(0, 30);
   display.printf("%uh%um%us",1-hour(),59-minute(),59-second());
   display.display();
+  Serial.print(temp);
+  Serial.print(" ");
+  Serial.print(second());
+  Serial.println();
+  delay(1000);
 }
