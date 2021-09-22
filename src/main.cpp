@@ -6,7 +6,7 @@
 
 ///////// VARIÁVEIS
 uint h, m, s, t;
-bool resistencia = 1, inicio=0;
+bool inicio=0;
 unsigned long previousMillis = 0;
 uint contador=1, incremento;
 uint setpoint_max=70;
@@ -29,8 +29,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define I2C_SDA 5 //D1
 #define I2C_SCL 4 //D2
 #define OUTPUT_PIN 14 //PWM resistencia via MOSFET
-#define COOLER_PIN 12 //COOLER via MOSFET
-#define BUTTON_PIN 13
+#define COOLER_PIN 13 //COOLER via MOSFET
+#define BUTTON_PIN 12
 
 ///////// DEFINIÇÃO DO SENSOR
 int TMP75_ADDR = 0x49;
@@ -53,7 +53,7 @@ void atualiza_display(void) {
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
-  display.printf("TEMP:%4.1f\r\n", Input);
+  display.printf("TEMP: %4.1f\r\n", Input);
   display.printf("SET:  %4.1f\r\n", Setpoint);
   display.printf("PWM: %5.0f\r\n", Output);
   if(t>0) display.printf(" %2dh%02dm%02ds", hora, minuto, segundo);
@@ -94,6 +94,7 @@ void setup() {
   pinMode(4, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
   pinMode(COOLER_PIN, OUTPUT); //pino D6
+  digitalWrite(COOLER_PIN, LOW); // desliga cooler
   //digitalWrite(led, HIGH);
   Wire.begin(I2C_SDA, I2C_SCL);
   Serial.begin(9600);
@@ -135,7 +136,6 @@ void loop()  {
     display.clearDisplay();
     Output = 0;
     analogWrite(OUTPUT_PIN, Output); // desliga saida
-    resistencia = 0;
     digitalWrite(COOLER_PIN, LOW); // se desligar resistencia desliga cooler
     contador=1;
     Serial.println(contador);
@@ -231,7 +231,6 @@ void loop()  {
   else {
     Output = 0;
     analogWrite(OUTPUT_PIN, Output); // desliga saida
-    resistencia = 0;
     digitalWrite(COOLER_PIN, LOW); // se desligar resistencia desliga cooler
     atualiza_display();
   }
