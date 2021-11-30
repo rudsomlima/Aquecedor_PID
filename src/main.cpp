@@ -232,6 +232,7 @@ void loop()  {
     Output = 0;
     analogWrite(OUTPUT_PIN, Output); // desliga saida
     digitalWrite(COOLER_PIN, LOW); // se desligar resistencia desliga cooler
+    Input = read_tm75();
     atualiza_display();
   }
 }
